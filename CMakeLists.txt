@@ -1,15 +1,46 @@
-cmake_minimum_required(VERSION 3.13.0)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
-set(SOURCES src/main.cpp src/engine/physics/physics.cpp deps/src/glad.c)
-set(CMAKE_GENERATOR "Unix Makefiles")
-project (2d_engine)
-set(SDL2_DIR C:/SDL2-devel-2.28.2-mingw/SDL2-2.28.2/cmake/)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-find_package(SDL2 REQUIRED)
-include_directories(${SDL2_INCLUDE_DIRS})
-add_executable(2d_engine ${SOURCES})
-target_link_libraries(2d_engine ${SDL2_LIBRARIES})
+cmake_minimum_required(VERSION 3.6)
+project(imgui-opengl-glfw-glew-cmake-demo)
+set(CMAKE_OSX_ARCHITECTURES "arm64")
+set(CMAKE_CXX_STANDARD 11)
 
-target_include_directories(2d_engine PUBLIC ${PROJECT_SOURCE_DIR}/deps/include)
-target_include_directories(2d_engine PUBLIC ${PROJECT_SOURCE_DIR}/src/engine)
-target_compile_options(2d_engine PRIVATE -g -mconsole)
+set(CMAKE_VERBOSE_MAKEFILE 1)
+set(APP_VERSION_MAJOR 1)
+set(APP_VERSION_MINOR 0)
+
+set(APP_TARGET 2d_engine)
+
+include_directories(${PROJECT_SOURCE_DIR})
+add_executable(${APP_TARGET} src/main.cpp)
+
+# glfw
+find_package(glfw3 REQUIRED)
+include_directories(${GLFW_INCLUDE_DIRS})
+link_libraries(${GLFW_LIBRARY_DIRS})
+
+# opengl
+find_package(OpenGL REQUIRED)
+include_directories(${OPENGL_INCLUDE_DIRS})
+
+# glew
+find_package(GLEW REQUIRED)
+include_directories(${GLEW_INCLUDE_DIRS})
+
+if (APPLE)
+    find_library(COCOA_LIBRARY Cocoa)
+    find_library(OpenGL_LIBRARY OpenGL)
+    find_library(IOKIT_LIBRARY IOKit)
+    find_library(COREVIDEO_LIBRARY CoreVideo)
+    SET(EXTRA_LIBS ${COCOA_LIBRARY} ${OpenGL_LIBRARY} ${IOKIT_LIBRARY} ${COREVIDEO_LIBRARY})
+endif (APPLE)
+
+if (WIN32)
+# nothing now
+endif (WIN32)
+
+target_link_libraries(
+        ${APP_TARGET}
+        glfw
+        ${OPENGL_LIBRARIES}
+        ${GLEW_LIBRARIES}
+        ${EXTRA_LIBS}
+)
