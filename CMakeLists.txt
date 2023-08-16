@@ -1,16 +1,21 @@
 cmake_minimum_required(VERSION 3.6)
 project(imgui-opengl-glfw-glew-cmake-demo)
-set(CMAKE_OSX_ARCHITECTURES "arm64")
-set(CMAKE_CXX_STANDARD 11)
+#set(CMAKE_OSX_ARCHITECTURES "arm64")
 
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_VERBOSE_MAKEFILE 1)
 set(APP_VERSION_MAJOR 1)
 set(APP_VERSION_MINOR 0)
-
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(APP_TARGET 2d_engine)
 
+add_compile_options(-g)
 include_directories(${PROJECT_SOURCE_DIR})
-add_executable(${APP_TARGET} src/main.cpp)
+include_directories(${PROJECT_SOURCE_DIR}/src/engine)
+add_executable(${APP_TARGET} src/main.cpp src/engine/render/render_init.cpp)
+
+list(APPEND CMAKE_PREFIX_PATH "C:/Projects/2d_engine/deps/GLFW/lib/cmake/glfw3")
+list(APPEND CMAKE_PREFIX_PATH "C:/glew-2.1.0/build/cmake/install/lib/cmake/glew")
 
 # glfw
 find_package(glfw3 REQUIRED)
@@ -41,6 +46,6 @@ target_link_libraries(
         ${APP_TARGET}
         glfw
         ${OPENGL_LIBRARIES}
-        ${GLEW_LIBRARIES}
+        GLEW::GLEW
         ${EXTRA_LIBS}
 )
