@@ -6,8 +6,8 @@ set(CMAKE_GENERATOR "Unix Makefiles")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 
-set(SOURCES src/main.cpp src/quadtree/quadtree.cpp src/grid/grid.cpp)
-set(INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/deps/p8g src/ src/quadtree src/grid)
+set(SOURCES src/main.cpp src/grid/grid.cpp src/parser/parser.cpp)
+set(INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/deps/p8g src/ src/structs src/grid src/parser)
 
 link_directories(${CMAKE_SOURCE_DIR}/deps/p8g)
 add_executable(2d_engine ${SOURCES})
