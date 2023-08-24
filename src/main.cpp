@@ -13,7 +13,7 @@ using std::endl;
 using std::vector;
 
 #define WINDOW_WIDTH  (1000U)
-#define WINDOW_HEIGHT (1000U)
+#define WINDOW_HEIGHT (500U)
 #define GRID_STEP     (20U)
 
 typedef enum {
@@ -31,7 +31,7 @@ typedef enum {
 #ifdef WINDOWS_BUILD
     eCtrl_Key = 341,
 #else
-    eCtrlKey = 343,
+    eCtrl_Key = 343,
 #endif
     eZ_Key = 90,
     eRightArrow_Key = 262,
