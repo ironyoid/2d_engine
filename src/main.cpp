@@ -6,6 +6,7 @@
 #include "points.hpp"
 #include "grid.hpp"
 #include <cmath>
+#include "physics.hpp"
 
 using namespace p8g;
 using std::cout;
@@ -205,7 +206,15 @@ uint32_t Draw::window_height;
 Point2D Draw::robot_point;
 
 int main (int argc, char *argv[]) {
-    if(2 == argc) {
+    Object obj1{ 0, 0, 5, 5 };
+    Object obj2{ 3, 2, 1, 1 };
+    StaticObjects test{};
+    test.Add(obj1);
+    test.Add(obj2);
+    for(auto n : test) {
+        cout << n.id << " " << n.object.ToString() << endl;
+    }
+    /*     if(2 == argc) {
         std::string path(argv[1]);
         Draw::Init(WINDOW_WIDTH * 2, WINDOW_HEIGHT * 2, WINDOW_WIDTH, WINDOW_HEIGHT, GRID_STEP, "outlines.txt");
         RunArgs run_args{ WINDOW_WIDTH, WINDOW_HEIGHT, "2d_engine", false };
@@ -219,5 +228,5 @@ int main (int argc, char *argv[]) {
                   &Draw::MouseWheel);
     } else {
         cout << "Wrong number of the parametrs!" << endl;
-    }
+    } */
 }

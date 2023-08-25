@@ -11,16 +11,30 @@ struct AABB {
 };
 
 struct Object {
-    uint32_t id;
     AABB aabb;
+    string ToString (void) {
+        string tmp = aabb.position.ToString() + " " + aabb.half_size.ToString();
+        return tmp;
+    }
 };
 
 class StaticObjects
 {
-    std::vector<Object> objects;
+   private:
+    struct StoredObject {
+        Object object;
+        uint32_t id;
+    };
+    using ObjectType = std::vector<StoredObject>;
+    ObjectType objects;
+    uint32_t counter;
+
+    Object LineToObject (Line2D line);
 
    public:
-    StaticObjects();
+    StaticObjects() = default;
+    ObjectType::iterator begin ();
+    ObjectType::iterator end ();
     uint32_t Add (Object obj);
     void Remove (uint32_t id);
 };
