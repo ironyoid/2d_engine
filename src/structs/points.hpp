@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <stdint.h>
+#include <cmath>
 
 using std::string;
 
@@ -64,6 +65,16 @@ struct Point2D {
     };
 };
 
+struct Quad2D {
+    Point2D letf_top;
+    Point2D size;
+};
+
+struct Circle2D {
+    Point2D center;
+    uint32_t r;
+};
+
 struct Line2D {
     Point2D a;
     Point2D b;
@@ -84,4 +95,8 @@ struct Line2D {
         tmp += std::to_string(bx) + "," + std::to_string(by);
         return tmp;
     };
+    float Length () {
+        float ret = sqrt((powf((b.x - a.x), 2) + powf((b.y - a.y), 2)));
+        return ret;
+    }
 };
