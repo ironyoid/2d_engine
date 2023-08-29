@@ -1,6 +1,5 @@
 #include "physics.hpp"
 #include "p8g.hpp"
-#include "points.hpp"
 #include <utility>
 #include <vector>
 #include <cmath>

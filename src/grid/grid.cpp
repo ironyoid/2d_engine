@@ -4,7 +4,7 @@
 #include <utility>
 #include <vector>
 #include "p8g.hpp"
-#include "points.hpp"
+#include "primitives.hpp"
 #include <cmath>
 using namespace p8g;
 using std::cout;

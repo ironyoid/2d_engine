@@ -1,5 +1,5 @@
 #include "parser.hpp"
-#include "points.hpp"
+#include "primitives.hpp"
 #include <fstream>
 #include <charconv>
 #include <string>

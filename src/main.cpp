@@ -3,7 +3,7 @@
 #include <vector>
 #include "p8g.hpp"
 #include "parser.hpp"
-#include "points.hpp"
+#include "primitives.hpp"
 #include "grid.hpp"
 #include <cmath>
 #include "physics.hpp"

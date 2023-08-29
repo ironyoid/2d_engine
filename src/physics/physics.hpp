@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include <stdint.h>
-#include "points.hpp"
+#include "primitives.hpp"
 
 struct AABB {
     Point2D position;
