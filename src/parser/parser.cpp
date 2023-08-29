@@ -36,16 +36,10 @@ std::optional<Line2D> Parser::ReadLine(string line, uint32_t width, uint32_t hei
     auto [x1, y1] = FindString(a, ",");
     auto [x2, y2] = FindString(b, ",");
     if((x1 != "") && (y1 != "") && (x2 != "") && (y2 != "")) {
-        float xf1, yf1, xf2, yf2;
-
-        xf1 = std::stof(x1.data());
-        yf1 = std::stof(y1.data());
-        xf2 = std::stof(x2.data());
-        yf2 = std::stof(y2.data());
-        line2d.a.x = static_cast<int32_t>(xf1 * width);
-        line2d.a.y = static_cast<int32_t>(yf1 * height);
-        line2d.b.x = static_cast<int32_t>(xf2 * width);
-        line2d.b.y = static_cast<int32_t>(yf2 * height);
+        line2d.a.x = std::stoi(x1.data());
+        line2d.a.y = std::stoi(y1.data());
+        line2d.b.x = std::stoi(x2.data());
+        line2d.b.y = std::stoi(y2.data());
         ret = line2d;
     }
     return ret;
@@ -56,11 +50,8 @@ std::optional<Point2D> Parser::ReadLastLine(string line, uint32_t width, uint32_
     Point2D point;
     auto [x, y] = FindString(line, ",");
     if((x != "") && (y != "")) {
-        float xf, yf;
-        xf = std::stof(x.data());
-        yf = std::stof(y.data());
-        point.x = static_cast<int32_t>(xf * width);
-        point.y = static_cast<int32_t>(yf * height);
+        point.x = std::stoi(x.data());
+        point.y = std::stoi(y.data());
         ret = point;
     }
     return ret;

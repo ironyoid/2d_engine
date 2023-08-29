@@ -75,6 +75,11 @@ struct Circle2D {
     uint32_t r;
 };
 
+struct Robot2D {
+    Point2D position;
+    int32_t velocity;
+};
+
 struct Line2D {
     Point2D a;
     Point2D b;
