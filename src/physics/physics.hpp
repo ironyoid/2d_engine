@@ -51,11 +51,11 @@ template<typename T> class Objects
     }
 };
 
-class DynamicObjects : public Objects<Robot2D>
+/* class DynamicObjects : public Objects<Robot2D>
 {
     DynamicObjects(VectorType _objects) : Objects<Robot2D>{ _objects } {
     }
-};
+}; */
 
 std::vector<Point2D> MinkovskiDifference (Line2D line, Quad2D quad);
 Quad2D MinkovskiDifference2 (Quad2D quad1, Quad2D quad2);

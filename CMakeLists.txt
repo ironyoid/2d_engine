@@ -6,7 +6,7 @@ set(CMAKE_GENERATOR "Unix Makefiles")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 
-set(SOURCES src/main.cpp src/grid/grid.cpp src/parser/parser.cpp src/physics/physics.cpp)
+set(SOURCES src/main.cpp src/grid/grid.cpp src/parser/parser.cpp src/physics/physics.cpp src/structs/robot.cpp)
 set(INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/deps/p8g src/ src/structs src/grid src/parser src/physics)
 
 link_directories(${CMAKE_SOURCE_DIR}/deps/p8g)

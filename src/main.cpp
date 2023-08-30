@@ -7,6 +7,8 @@
 #include "grid.hpp"
 #include <cmath>
 #include "physics.hpp"
+#include "robot.hpp"
+#include <windows.h>
 
 using namespace p8g;
 using std::cout;
