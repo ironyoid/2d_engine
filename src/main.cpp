@@ -52,6 +52,7 @@ class Draw
    public:
     static Grid *grid;
     static Parser *parser;
+    static Wheel *wheel;
     static uint32_t window_width;
     static uint32_t window_height;
     static vector<Line2D> lines;
@@ -73,6 +74,7 @@ class Draw
         window_height = _window_height;
         scale = 1.0;
         parser = new Parser(path);
+        wheel = new Wheel(200, 0.2, 1);
         auto [ret_lines, ret_point] = parser->ReadLines(window_width, window_height);
         /* lines.push_back(Line2D{ 250, 250, 1000, 250 }); */
         lines = ret_lines;
@@ -159,9 +161,18 @@ class Draw
     }
 
     static void DrawTask (void) {
+        static int last_millis = 0;
         background(250);
-
-        ProccessMovement();
+        Circle2D circle{ 0, 200, 30 };
+        if(last_millis + 100 <= p8g::millis()) {
+            last_millis = p8g::millis();
+            wheel->Proccess(0.1);
+        }
+        circle.center.x = wheel->GetPosition();
+        p8g::stroke(255, 0, 0, 100);
+        p8g::fill(255, 0, 0, 100);
+        DrawCircle(circle);
+        /*         ProccessMovement();
 
         p8g::applyMatrix(1.0, 0, 0, 1, -position.x, -position.y);
         p8g::scale(scale, scale);
@@ -178,12 +189,21 @@ class Draw
 
         p8g::strokeWeight(3);
         p8g::stroke(0, 0, 255, 255);
-        p8g::line(robot_circle.center.x, robot_circle.center.y, mouse.x, mouse.y);
+        p8g::line(robot_circle.center.x, robot_circle.center.y, mouse.x, mouse.y); */
     };
 
     static void KeyPressed () {
+        static float torque = 0;
         if(eCtrl_Key == keyCode) {
             is_ctrl_pressed = true;
+        }
+        if(eRightArrow_Key == keyCode) {
+            torque += 1;
+            wheel->SetTorque(torque);
+        }
+        if(eLeftArrow_Key == keyCode) {
+            torque -= 1;
+            wheel->SetTorque(torque);
         }
     };
 
@@ -243,6 +263,7 @@ float Draw::scale;
 uint32_t Draw::window_width;
 uint32_t Draw::window_height;
 Circle2D Draw::robot_circle;
+Wheel *Draw::wheel;
 
 int main (int argc, char *argv[]) {
     if(2 == argc) {
