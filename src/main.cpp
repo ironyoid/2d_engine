@@ -8,7 +8,6 @@
 #include <cmath>
 #include "physics.hpp"
 #include "robot.hpp"
-#include <windows.h>
 
 using namespace p8g;
 using std::cout;
@@ -74,7 +73,7 @@ class Draw
         window_height = _window_height;
         scale = 1.0;
         parser = new Parser(path);
-        wheel = new Wheel(200, 0.2, 0.05);
+        wheel = new Wheel(200, 0.2, 20);
         auto [ret_lines, ret_point] = parser->ReadLines(window_width, window_height);
         /* lines.push_back(Line2D{ 250, 250, 1000, 250 }); */
         lines = ret_lines;
@@ -172,6 +171,11 @@ class Draw
         p8g::stroke(255, 0, 0, 100);
         p8g::fill(255, 0, 0, 100);
         DrawCircle(circle);
+        p8g::stroke(255, 0, 0, 255);
+        float theta = wheel->GetAnglePosition();
+        float x_cr = circle.center.x + circle.r * cos(theta);
+        float y_cr = circle.center.y + circle.r * sin(theta);
+        p8g::line(circle.center.x, circle.center.y, x_cr, y_cr);
         /*         ProccessMovement();
 
         p8g::applyMatrix(1.0, 0, 0, 1, -position.x, -position.y);
@@ -198,11 +202,11 @@ class Draw
             is_ctrl_pressed = true;
         }
         if(eRightArrow_Key == keyCode) {
-            torque += 0.1;
+            torque += 1;
             wheel->SetTorque(torque);
         }
         if(eLeftArrow_Key == keyCode) {
-            torque -= 0.1;
+            torque -= 1;
             wheel->SetTorque(torque);
         }
     };

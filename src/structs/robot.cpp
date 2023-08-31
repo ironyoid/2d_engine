@@ -21,6 +21,7 @@ Wheel::Wheel(int32_t position, float mass, float radius) : position(position), m
     is_stopping = false;
     count = 0;
     state = eWheelState_Idle;
+    angle_position = 0.0;
 }
 
 float Wheel::GetCoef(void) {
@@ -65,12 +66,14 @@ float Wheel::Run(float torque, float time_delta) {
     float acc = angle_acc * radius;
 
     current_angle_speed = current_angle_speed + angle_acc * time_delta;
+    //cout << "acc = " << acc << " angle_acc = " << angle_acc << "current_angle_speed = " << current_angle_speed << endl;
     current_angle_speed = current_angle_speed < -(max_rpm * pi2) ? -(max_rpm * pi2) : current_angle_speed;
     current_angle_speed = current_angle_speed > (max_rpm * pi2) ? (max_rpm * pi2) : current_angle_speed;
-    current_angle_speed = fabs(current_angle_speed) < 0.1 ? 0 : current_angle_speed;
+    current_angle_speed = fabs(current_angle_speed) < 0.001 ? 0 : current_angle_speed;
 
     current_speed = current_angle_speed * radius;
     position = position + current_speed * time_delta + (acc * pow(time_delta, 2)) / 2.0;
+    angle_position = (angle_position + current_angle_speed * time_delta + (angle_acc * powf(time_delta, 2)) / 2.0);
 
     return current_speed;
 }
@@ -99,6 +102,7 @@ void Wheel::Proccess(float time_delta) {
         cout << "torque = " << local_torque << endl;
         cout << "time delta = " << time_delta << endl;
         cout << "position = " << position << endl;
+        cout << "angle_position = " << angle_position << endl;
         cout << "current_speed = " << current_speed << endl;
         cout << "current_angle_speed = " << current_angle_speed << endl;
         cout << "state = " << state << endl;
@@ -116,6 +120,10 @@ void Wheel::Proccess(float time_delta) {
 
 int32_t Wheel::GetPosition(void) {
     return static_cast<int32_t>(position);
+}
+
+float Wheel::GetAnglePosition(void) {
+    return angle_position;
 }
 
 void Wheel::SetTorque(float torque) {

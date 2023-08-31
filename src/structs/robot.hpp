@@ -11,6 +11,7 @@ class Wheel
 {
    private:
     float position;
+    float angle_position;
     float velocity;
     float mass;
     float radius;
@@ -39,6 +40,7 @@ class Wheel
    public:
     Wheel(int32_t position, float mass, float radius);
     int32_t GetPosition (void);
+    float GetAnglePosition (void);
     void Proccess (float time_delta);
     void SetTorque (float torque);
 };
