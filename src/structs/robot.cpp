@@ -3,8 +3,11 @@
 
 namespace {
     const float g = 9.8;
-    const float rolling_resistance_st = 0.0005;
-    const float rolling_resistance = 0.001;
+    const float rolling_resistance_st = 0.5;
+    const float rolling_resistance = 1;
+    const float max_rpm = 10;
+    const float pi = 3.14;
+    constexpr float pi2 = 6.28;
 } // namespace
 
 using std::cout;
@@ -13,28 +16,62 @@ using std::endl;
 Wheel::Wheel(int32_t position, float mass, float radius) : position(position), mass(mass), radius(radius) {
     inertia_moment = 0.5 * mass * pow(radius, 2);
     N = g * mass;
-    resistance_torque = rolling_resistance_st * N;
     current_speed = 0.0;
     local_torque = 0.0;
+    is_stopping = false;
+    count = 0;
+    state = eWheelState_Idle;
 }
 
-float Wheel::GetAcc(float torque) {
-    float acc = ((torque - N * inertia_moment) * radius) / (inertia_moment + mass * pow(radius, 2));
+float Wheel::GetCoef(void) {
+    float ret = 0.0;
+    switch(state) {
+        case eWheelState_Idle:
+            ret = fabs(local_torque / N);
+            if(ret > rolling_resistance) {
+                state = eWheelState_Motion;
+                ret = rolling_resistance_st;
+            }
+            break;
+        case eWheelState_Motion:
+            ret = rolling_resistance_st;
+            break;
+        case eWheelState_Stop:
+            ret = rolling_resistance_st * current_speed;
+            break;
+    }
+    return ret;
+}
+
+float Wheel::GetAngleAcc2(float torque) {
+    float acc = (torque - GetCoef() * N) / (inertia_moment + mass * pow(radius, 2));
     return acc;
 }
 
 float Wheel::GetAngleAcc(float torque) {
-    float acc = (resistance_torque + torque - rolling_resistance_st * N) / (inertia_moment + mass * pow(radius, 2));
+    float acc = 0.0;
+    if(abs(torque) >= rolling_resistance * N) {
+        acc = (torque - rolling_resistance_st * N) / (inertia_moment + mass * pow(radius, 2));
+    }
+    cout << "abs = " << fabs(current_speed) << endl;
+    if(torque == 0.0 && fabs(current_speed) > 0.0) {
+        acc = (-rolling_resistance * N) / (inertia_moment + mass * pow(radius, 2));
+    }
     return acc;
 }
 
 float Wheel::Run(float torque, float time_delta) {
-    float angle_acc = GetAngleAcc(torque);
+    float angle_acc = GetAngleAcc2(torque);
     float acc = angle_acc * radius;
+
     current_angle_speed = current_angle_speed + angle_acc * time_delta;
-    current_speed = current_speed + acc * time_delta;
+    current_angle_speed = current_angle_speed < -(max_rpm * pi2) ? -(max_rpm * pi2) : current_angle_speed;
+    current_angle_speed = current_angle_speed > (max_rpm * pi2) ? (max_rpm * pi2) : current_angle_speed;
+    current_angle_speed = fabs(current_angle_speed) < 0.1 ? 0 : current_angle_speed;
+
+    current_speed = current_angle_speed * radius;
     position = position + current_speed * time_delta + (acc * pow(time_delta, 2)) / 2.0;
-    cout << "position = " << position << endl;
+
     return current_speed;
 }
 
@@ -54,12 +91,27 @@ float Wheel::Stop(float torque, float time_delta) {
 }
 
 void Wheel::Proccess(float time_delta) {
-    cout << "time delta = " << time_delta << endl;
-    if(local_torque < 0) {
-        cout << "stop = " << Stop(local_torque, time_delta) << endl;
-    } else {
-        cout << "run = " << Run(local_torque, time_delta) << endl;
+    static uint8_t count = 0;
+
+    Run(local_torque, time_delta);
+
+    if(count == 10) {
+        cout << "torque = " << local_torque << endl;
+        cout << "time delta = " << time_delta << endl;
+        cout << "position = " << position << endl;
+        cout << "current_speed = " << current_speed << endl;
+        cout << "current_angle_speed = " << current_angle_speed << endl;
+        cout << "state = " << state << endl;
+        count = 0;
     }
+
+    if(fabs(current_speed) == 0.0) {
+        state = eWheelState_Idle;
+    } else if(local_torque != 0) {
+    } else {
+        state = eWheelState_Stop;
+    }
+    count += 1;
 }
 
 int32_t Wheel::GetPosition(void) {

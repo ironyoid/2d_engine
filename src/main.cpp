@@ -74,7 +74,7 @@ class Draw
         window_height = _window_height;
         scale = 1.0;
         parser = new Parser(path);
-        wheel = new Wheel(200, 0.2, 1);
+        wheel = new Wheel(200, 0.2, 0.05);
         auto [ret_lines, ret_point] = parser->ReadLines(window_width, window_height);
         /* lines.push_back(Line2D{ 250, 250, 1000, 250 }); */
         lines = ret_lines;
@@ -164,9 +164,9 @@ class Draw
         static int last_millis = 0;
         background(250);
         Circle2D circle{ 0, 200, 30 };
-        if(last_millis + 100 <= p8g::millis()) {
+        if(last_millis + 10 <= p8g::millis()) {
             last_millis = p8g::millis();
-            wheel->Proccess(0.1);
+            wheel->Proccess(0.01);
         }
         circle.center.x = wheel->GetPosition();
         p8g::stroke(255, 0, 0, 100);
@@ -198,11 +198,11 @@ class Draw
             is_ctrl_pressed = true;
         }
         if(eRightArrow_Key == keyCode) {
-            torque += 1;
+            torque += 0.1;
             wheel->SetTorque(torque);
         }
         if(eLeftArrow_Key == keyCode) {
-            torque -= 1;
+            torque -= 0.1;
             wheel->SetTorque(torque);
         }
     };

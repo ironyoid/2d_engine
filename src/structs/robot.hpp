@@ -20,8 +20,19 @@ class Wheel
     float current_speed;
     float current_angle_speed;
     float local_torque;
-    float GetAcc (float torque);
+    bool is_stopping;
+    uint32_t count;
+
+    typedef enum {
+        eWheelState_Idle = 0,
+        eWheelState_Motion = 1,
+        eWheelState_Stop = 2,
+    } eWheelState_t;
+    eWheelState_t state;
+
     float GetAngleAcc (float torque);
+    float GetAngleAcc2 (float torque);
+    float GetCoef (void);
     float Run (float torque, float time_delta);
     float Stop (float torque, float time_delta);
 
