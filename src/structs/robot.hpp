@@ -43,6 +43,7 @@ class Wheel
     float GetAnglePosition (void);
     void Proccess (float time_delta);
     void SetTorque (float torque);
+    float CalculatePosition (float angle);
 };
 
 class Robot
