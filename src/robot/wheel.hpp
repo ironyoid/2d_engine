@@ -1,4 +1,5 @@
 #pragma once
+#include <_types/_uint32_t.h>
 #include <iostream>
 #include <string>
 #include <stdint.h>
@@ -12,18 +13,15 @@ class Wheel
    private:
     float position;
     float angle_position;
-    float velocity;
     float mass;
     float radius;
     float inertia_moment;
-    float resistance_torque;
     float N;
     float current_speed;
     float current_angle_speed;
-    float local_torque;
-    bool is_stopping;
-    uint32_t count;
-
+    float torque;
+    float max_torque;
+    uint32_t encoder;
     typedef enum {
         eWheelState_Idle = 0,
         eWheelState_Motion = 1,
@@ -32,24 +30,17 @@ class Wheel
     eWheelState_t state;
 
     float GetAngleAcc (float torque);
-    float GetAngleAcc2 (float torque);
     float GetCoef (void);
-    float Run (float torque, float time_delta);
-    float Stop (float torque, float time_delta);
+    void Run (float torque, float time_delta);
+    void UpdateEncoder (void);
 
    public:
-    Wheel(int32_t position, float mass, float radius);
+    Wheel(int32_t position, float mass, float radius, float max_torque);
     int32_t GetPosition (void);
     float GetAnglePosition (void);
+    float GetRadius (void);
     void Proccess (float time_delta);
     void SetTorque (float torque);
     float CalculatePosition (float angle);
-};
-
-class Robot
-{
-    Point2D position;
-    Wheel left;
-    Wheel right;
-    float angle;
+    uint32_t GetEncoder (void);
 };

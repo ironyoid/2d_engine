@@ -52,6 +52,7 @@ class Draw
     static Grid *grid;
     static Parser *parser;
     static Wheel *wheel;
+    static Robot *robot;
     static uint32_t window_width;
     static uint32_t window_height;
     static vector<Line2D> lines;
@@ -73,7 +74,8 @@ class Draw
         window_height = _window_height;
         scale = 1.0;
         parser = new Parser(path);
-        wheel = new Wheel(200, 0.2, 1);
+        wheel = new Wheel(200, 1, 1, 100);
+        robot = new Robot(Point2D{ 250, 250 }, 20, 0.1, 2, 100, 0);
         auto [ret_lines, ret_point] = parser->ReadLines(window_width, window_height);
         /* lines.push_back(Line2D{ 250, 250, 1000, 250 }); */
         lines = ret_lines;
@@ -162,22 +164,23 @@ class Draw
     static void DrawTask (void) {
         static int last_millis = 0;
         background(250);
-        Circle2D circle{ 0, 200, 100 };
-        if(last_millis + 10 <= p8g::millis()) {
-            last_millis = p8g::millis();
-            wheel->Proccess(0.01);
-        }
-        circle.center.x = wheel->GetPosition();
-        p8g::stroke(255, 0, 0, 100);
-        p8g::fill(255, 0, 0, 100);
-        DrawCircle(circle);
+        robot->Draw();
+        // Circle2D circle{ Point2D{ 0, 200 }, static_cast<uint32_t>(wheel->GetRadius() * 100) };
+        // if(last_millis + 5 <= p8g::millis()) {
+        //     last_millis = p8g::millis();
+        //     wheel->Proccess(0.005);
+        // }
+        // circle.center.x = wheel->GetPosition();
+        // p8g::stroke(255, 0, 0, 100);
+        // p8g::fill(255, 0, 0, 100);
+        // DrawCircle(circle);
 
-        p8g::stroke(255, 0, 0, 255);
-        p8g::strokeWeight(10);
-        float theta = wheel->GetAnglePosition();
-        float x_cr = circle.center.x + circle.r * cos(theta);
-        float y_cr = circle.center.y + circle.r * sin(theta);
-        p8g::line(circle.center.x, circle.center.y, x_cr, y_cr);
+        // p8g::stroke(255, 0, 0, 255);
+        // p8g::strokeWeight(2);
+        // float theta = wheel->GetAnglePosition();
+        // float x_cr = circle.center.x + circle.r * cos(theta);
+        // float y_cr = circle.center.y + circle.r * sin(theta);
+        // p8g::line(circle.center.x, circle.center.y, x_cr, y_cr);
 
         /* ProccessMovement(); */
 
@@ -200,17 +203,21 @@ class Draw
     };
 
     static void KeyPressed () {
-        static float torque = 0;
+        static float angle = 0;
         if(eCtrl_Key == keyCode) {
             is_ctrl_pressed = true;
         }
         if(eRightArrow_Key == keyCode) {
-            torque += 1;
-            wheel->SetTorque(torque);
+            angle += 0.1;
+            robot->SetAngle(angle);
+            // torque += 100;
+            // wheel->SetTorque(torque);
         }
         if(eLeftArrow_Key == keyCode) {
-            torque -= 1;
-            wheel->SetTorque(torque);
+            angle -= 0.1;
+            robot->SetAngle(angle);
+            // torque -= 100;
+            // wheel->SetTorque(torque);
         }
     };
 
@@ -271,6 +278,7 @@ uint32_t Draw::window_width;
 uint32_t Draw::window_height;
 Circle2D Draw::robot_circle;
 Wheel *Draw::wheel;
+Robot *Draw::robot;
 
 int main (int argc, char *argv[]) {
     if(2 == argc) {

@@ -6,6 +6,11 @@
 
 using std::string;
 
+namespace Constants {
+    constexpr float pi = 3.141592;
+    constexpr float pi2 = 2 * pi;
+    const float g = 9.8;
+} // namespace Constants
 struct Point2D {
     int32_t x;
     int32_t y;
@@ -73,6 +78,8 @@ struct Quad2D {
 struct Circle2D {
     Point2D center;
     uint32_t r;
+    Circle2D() = default;
+    Circle2D(Point2D center, uint32_t radius) : center(center), r(radius){};
 };
 
 struct Line2D {
