@@ -44,6 +44,10 @@ typedef enum {
     eR_Key = 82,
     ePlus_Key = 61,
     eMinus_key = 45,
+    eW_key = 87,
+    eS_key = 83,
+    eE_key = 69,
+    eD_key = 68,
 } eKeyboardKeys_t;
 
 class Draw
@@ -164,12 +168,15 @@ class Draw
     static void DrawTask (void) {
         static int last_millis = 0;
         background(250);
-        robot->Draw();
+
         // Circle2D circle{ Point2D{ 0, 200 }, static_cast<uint32_t>(wheel->GetRadius() * 100) };
-        // if(last_millis + 5 <= p8g::millis()) {
-        //     last_millis = p8g::millis();
-        //     wheel->Proccess(0.005);
-        // }
+        if(last_millis + 5 <= p8g::millis()) {
+            last_millis = p8g::millis();
+            //wheel->Proccess(0.005);
+            robot->ProcessLeft(0.005);
+            robot->ProcessRight(0.005);
+        }
+        robot->Draw();
         // circle.center.x = wheel->GetPosition();
         // p8g::stroke(255, 0, 0, 100);
         // p8g::fill(255, 0, 0, 100);
@@ -204,21 +211,25 @@ class Draw
 
     static void KeyPressed () {
         static float angle = 0;
+        static float left_torque = 0.0;
+        static float right_torque = 0.0;
+        cout << "key = " << keyCode << endl;
         if(eCtrl_Key == keyCode) {
             is_ctrl_pressed = true;
         }
-        if(eRightArrow_Key == keyCode) {
-            angle += 0.1;
-            robot->SetAngle(angle);
-            // torque += 100;
-            // wheel->SetTorque(torque);
+        if(eW_key == keyCode) {
+            left_torque += 10;
         }
-        if(eLeftArrow_Key == keyCode) {
-            angle -= 0.1;
-            robot->SetAngle(angle);
-            // torque -= 100;
-            // wheel->SetTorque(torque);
+        if(eS_key == keyCode) {
+            left_torque -= 10;
         }
+        if(eE_key == keyCode) {
+            right_torque += 10;
+        }
+        if(eD_key == keyCode) {
+            right_torque -= 10;
+        }
+        robot->SetTorque(left_torque, right_torque);
     };
 
     static void KeyReleased () {

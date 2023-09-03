@@ -31,7 +31,7 @@ class Wheel
 
     float GetAngleAcc (float torque);
     float GetCoef (void);
-    void Run (float torque, float time_delta);
+    float Run (float torque, float time_delta);
     void UpdateEncoder (void);
 
    public:
@@ -39,7 +39,7 @@ class Wheel
     int32_t GetPosition (void);
     float GetAnglePosition (void);
     float GetRadius (void);
-    void Proccess (float time_delta);
+    float Process (float time_delta);
     void SetTorque (float torque);
     float CalculatePosition (float angle);
     uint32_t GetEncoder (void);

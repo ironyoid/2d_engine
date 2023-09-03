@@ -56,26 +56,28 @@ void Wheel::UpdateEncoder(void) {
     encoder = static_cast<uint32_t>(tmp);
 }
 
-void Wheel::Run(float torque, float time_delta) {
+float Wheel::Run(float torque, float time_delta) {
     float angle_acc = GetAngleAcc(torque);
     float acc = angle_acc * radius;
     float angle_position_delta = 0.0;
-
+    float position_delta = 0.0;
     current_angle_speed = current_angle_speed + angle_acc * time_delta;
     // current_angle_speed = current_angle_speed < -(max_rpm * pi2) ? -(max_rpm * pi2) : current_angle_speed;
     // current_angle_speed = current_angle_speed > (max_rpm * pi2) ? (max_rpm * pi2) : current_angle_speed;
     current_angle_speed = fabs(current_angle_speed) < 0.001 ? 0 : current_angle_speed;
     current_speed = current_angle_speed * radius;
-    position = position + (current_speed * time_delta + (acc * powf(time_delta, 2)) / 2.0) * 100;
+    position_delta = (current_speed * time_delta + (acc * powf(time_delta, 2)) / 2.0) * 100;
+    position += position_delta;
     angle_position_delta = current_angle_speed * time_delta + (angle_acc * powf(time_delta, 2)) / 2.0;
     angle_position += angle_position_delta;
     UpdateEncoder();
+    return position_delta;
 }
 
-void Wheel::Proccess(float time_delta) {
+float Wheel::Process(float time_delta) {
     static uint8_t count = 0;
-
-    Run(torque, time_delta);
+    float position_delta = 0.0;
+    position_delta = Run(torque, time_delta);
 
     if(count == 10) {
         cout << "torque = " << torque << endl;
@@ -97,6 +99,7 @@ void Wheel::Proccess(float time_delta) {
         state = eWheelState_Stop;
     }
     count += 1;
+    return position_delta;
 }
 
 int32_t Wheel::GetPosition(void) {
