@@ -57,10 +57,9 @@ class Draw
     static Parser *parser;
     static Wheel *wheel;
     static Robot *robot;
+    static vector<Line2D> lines;
     static uint32_t window_width;
     static uint32_t window_height;
-    static vector<Line2D> lines;
-    static Circle2D robot_circle;
     static Point2D position;
     static Point2D mouse;
     static float scale;
@@ -82,8 +81,6 @@ class Draw
         robot = new Robot(Point2D{ 250, 250 }, 20, 0.1, 2, 100, 0);
         auto [ret_lines, ret_point] = parser->ReadLines(window_width, window_height);
         lines = ret_lines;
-        robot_circle.center = ret_point;
-        robot_circle.r = 20;
         grid = new Grid(step, width, height, _window_width, _window_height);
         grid->GenerateGrid();
     }
@@ -110,10 +107,11 @@ class Draw
     }
 
     static void DrawLines (vector<Line2D> lines, Point2D _position) {
+        auto body = robot->GetBody();
         for(auto n : lines) {
-            auto [ret, ret_point] = LineCircleCollision(n, robot_circle);
-            robot_circle.center.x += ret_point.x;
-            robot_circle.center.y += ret_point.y;
+            auto [ret, ret_point] = Physics::LineCircleCollision(n, *body);
+            body->center.x += ret_point.x;
+            body->center.y += ret_point.y;
 
             p8g::strokeWeight(LINE_THICKNESS);
             p8g::line(n.a.x - _position.x, n.a.y - _position.y, n.b.x - _position.x, n.b.y - _position.y);
@@ -137,31 +135,6 @@ class Draw
     static void DrawCircle (Circle2D circle) {
         p8g::ellipseMode(RADIUS);
         p8g::ellipse(circle.center.x, circle.center.y, circle.r, circle.r);
-    }
-    static void ProccessMovement (void) {
-        int dx = mouse.x - robot_circle.center.x;
-        int dy = mouse.y - robot_circle.center.y;
-        int steps = abs(dx) > abs(dy) ? abs(dx) : abs(dy);
-
-        float inc_x = dx / (float) steps;
-        float inc_y = dy / (float) steps;
-        if((mouse.x != robot_circle.center.x) || (mouse.y != robot_circle.center.y)) {
-            Line2D len_line{ robot_circle.center.x, robot_circle.center.y, mouse.x, mouse.y };
-            int32_t stx = inc_x * (len_line.Length() / 10);
-            int32_t sty = inc_y * (len_line.Length() / 10);
-            if(stx >= 10) {
-                stx = 10;
-            } else if(stx <= -10) {
-                stx = -10;
-            }
-            if(sty >= 10) {
-                sty = 10;
-            } else if(sty <= -10) {
-                sty = -10;
-            }
-            robot_circle.center.x += stx;
-            robot_circle.center.y += sty;
-        }
     }
 
     static void DrawTask (void) {
@@ -251,15 +224,14 @@ class Draw
 
 Grid *Draw::grid;
 Parser *Draw::parser;
-Point2D Draw::position;
 vector<Line2D> Draw::lines;
+Point2D Draw::position;
 bool Draw::is_ctrl_pressed;
 bool Draw::is_right_button_pressed;
 Point2D Draw::mouse;
 float Draw::scale;
 uint32_t Draw::window_width;
 uint32_t Draw::window_height;
-Circle2D Draw::robot_circle;
 Wheel *Draw::wheel;
 Robot *Draw::robot;
 

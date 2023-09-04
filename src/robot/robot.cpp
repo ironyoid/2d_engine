@@ -9,7 +9,7 @@ using std::endl;
 Robot::Robot(Point2D position, uint32_t radius, float wheel_radius, float mass, float max_torque, float angle) :
     left(0, mass / 2, wheel_radius, max_torque),
     right(0, mass / 2, wheel_radius, max_torque),
-    robot(position, radius),
+    body(position, radius),
     angle(angle) {
     line.a.x = 250;
     line.a.y = 250;
@@ -34,9 +34,9 @@ void Robot::Draw(void) {
     p8g::stroke(255, 0, 0, 100);
     p8g::fill(255, 0, 0, 100);
     p8g::ellipseMode(p8g::RADIUS);
-    robot.center.x = (line.a.x + line.b.x) / 2;
-    robot.center.y = (line.a.y + line.b.y) / 2;
-    p8g::ellipse(robot.center.x, robot.center.y, len / 2, len / 2);
+    body.center.x = (line.a.x + line.b.x) / 2;
+    body.center.y = (line.a.y + line.b.y) / 2;
+    p8g::ellipse(body.center.x, body.center.y, len / 2, len / 2);
 
     p8g::stroke(255, 0, 0, 255);
     p8g::strokeWeight(3);
@@ -92,4 +92,8 @@ void Robot::ProcessRight(float time_delta) {
     line.b.y = y;
 
     //cout << "left = " << line.ToString() << endl;
+}
+
+Circle2D *Robot::GetBody(void) {
+    return &body;
 }

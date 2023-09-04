@@ -3,6 +3,7 @@
 #include <string>
 #include <stdint.h>
 #include <cmath>
+#include "p8g.hpp"
 
 using std::string;
 
@@ -102,7 +103,7 @@ struct Line2D {
         tmp += std::to_string(bx) + "," + std::to_string(by);
         return tmp;
     };
-    float Length () {
+    float Length (void) {
         float ret = sqrt((powf((b.x - a.x), 2) + powf((b.y - a.y), 2)));
         return ret;
     }

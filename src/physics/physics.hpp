@@ -5,11 +5,6 @@
 #include <stdint.h>
 #include "primitives.hpp"
 
-struct AABB {
-    Point2D position;
-    Point2D half_size;
-};
-
 template<typename T> struct Object {
     T data;
     uint32_t id;
@@ -56,9 +51,10 @@ template<typename T> class Objects
     DynamicObjects(VectorType _objects) : Objects<Robot2D>{ _objects } {
     }
 }; */
-
-std::vector<Point2D> MinkovskiDifference (Line2D line, Quad2D quad);
-Quad2D MinkovskiDifference2 (Quad2D quad1, Quad2D quad2);
-std::pair<bool, Point2D> LineCircleCollision (Line2D line, Circle2D circle);
-bool PointLineCollision (Point2D point, Line2D line);
-std::pair<bool, Point2D> PointCircleCollision (Point2D point, Circle2D circle);
+namespace Physics {
+    std::vector<Point2D> MinkovskiDifference (Line2D line, Quad2D quad);
+    Quad2D MinkovskiDifference2 (Quad2D quad1, Quad2D quad2);
+    std::pair<bool, Point2D> LineCircleCollision (Line2D line, Circle2D circle);
+    bool PointLineCollision (Point2D point, Line2D line);
+    std::pair<bool, Point2D> PointCircleCollision (Point2D point, Circle2D circle);
+} // namespace Physics

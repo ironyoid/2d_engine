@@ -7,7 +7,7 @@ class Robot
    private:
     Wheel left;
     Wheel right;
-    Circle2D robot;
+    Circle2D body;
     Line2D line;
     float angle;
     float len;
@@ -25,4 +25,5 @@ class Robot
     void ProcessLeft (float time_delta);
     void ProcessRight (float time_delta);
     void SetTorque (float _left, float _right);
+    Circle2D *GetBody (void);
 };
