@@ -81,7 +81,6 @@ class Draw
         wheel = new Wheel(200, 1, 1, 100);
         robot = new Robot(Point2D{ 250, 250 }, 20, 0.1, 2, 100, 0);
         auto [ret_lines, ret_point] = parser->ReadLines(window_width, window_height);
-        /* lines.push_back(Line2D{ 250, 250, 1000, 250 }); */
         lines = ret_lines;
         robot_circle.center = ret_point;
         robot_circle.r = 20;
@@ -168,45 +167,18 @@ class Draw
     static void DrawTask (void) {
         static int last_millis = 0;
         background(250);
+        p8g::applyMatrix(1.0, 0, 0, 1, -position.x, -position.y);
+        p8g::scale(scale, scale);
 
-        // Circle2D circle{ Point2D{ 0, 200 }, static_cast<uint32_t>(wheel->GetRadius() * 100) };
         if(last_millis + 5 <= p8g::millis()) {
             last_millis = p8g::millis();
-            //wheel->Proccess(0.005);
             robot->ProcessLeft(0.005);
             robot->ProcessRight(0.005);
         }
         robot->Draw();
-        // circle.center.x = wheel->GetPosition();
-        // p8g::stroke(255, 0, 0, 100);
-        // p8g::fill(255, 0, 0, 100);
-        // DrawCircle(circle);
-
-        // p8g::stroke(255, 0, 0, 255);
-        // p8g::strokeWeight(2);
-        // float theta = wheel->GetAnglePosition();
-        // float x_cr = circle.center.x + circle.r * cos(theta);
-        // float y_cr = circle.center.y + circle.r * sin(theta);
-        // p8g::line(circle.center.x, circle.center.y, x_cr, y_cr);
-
-        /* ProccessMovement(); */
-
-        p8g::applyMatrix(1.0, 0, 0, 1, -position.x, -position.y);
-        p8g::scale(scale, scale);
 
         p8g::stroke(0, 0, 0, 120);
         grid->DrawGrid(position);
-        /*
-        p8g::stroke(0, 0, 0, 255);
-        DrawLines(lines, Point2D{ 0, 0 });
-
-        p8g::stroke(255, 0, 0, 50);
-        p8g::fill(255, 0, 0, 50);
-        DrawCircle(robot_circle);
-
-        p8g::strokeWeight(3);
-        p8g::stroke(0, 0, 255, 255);
-        p8g::line(robot_circle.center.x, robot_circle.center.y, mouse.x, mouse.y); */
     };
 
     static void KeyPressed () {
