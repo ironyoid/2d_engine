@@ -57,4 +57,5 @@ namespace Physics {
     std::pair<bool, Point2D> LineCircleCollision (Line2D line, Circle2D circle);
     bool PointLineCollision (Point2D point, Line2D line);
     std::pair<bool, Point2D> PointCircleCollision (Point2D point, Circle2D circle);
+    std::pair<bool, Point2D> LineLineCollision (Line2D a, Line2D b);
 } // namespace Physics

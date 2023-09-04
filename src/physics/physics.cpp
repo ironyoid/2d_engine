@@ -1,5 +1,6 @@
 #include "physics.hpp"
 #include "p8g.hpp"
+#include "primitives.hpp"
 #include <utility>
 #include <vector>
 #include <cmath>
@@ -64,5 +65,31 @@ namespace Physics {
             }
         }
         return std::make_pair(ret, ret_point + ret_point_1 + ret_point_2);
+    }
+
+    std::pair<bool, Point2D> LineLineCollision (Line2D a, Line2D b) {
+        bool ret = false;
+        Point2D ret_point{ 0, 0 };
+        float x1 = static_cast<float>(a.a.x);
+        float x2 = static_cast<float>(a.b.x);
+        float x3 = static_cast<float>(b.a.x);
+        float x4 = static_cast<float>(b.b.x);
+
+        float y1 = static_cast<float>(a.a.y);
+        float y2 = static_cast<float>(a.b.y);
+        float y3 = static_cast<float>(b.a.y);
+        float y4 = static_cast<float>(b.b.y);
+
+        float uA = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));
+        float uB = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));
+
+        if(uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1) {
+            float intersection_x = x1 + (uA * (x2 - x1));
+            float intersection_y = y1 + (uA * (y2 - y1));
+            ret = true;
+            ret_point.x = static_cast<int32_t>(intersection_x);
+            ret_point.y = static_cast<int32_t>(intersection_y);
+        }
+        return std::make_pair(ret, ret_point);
     }
 } // namespace Physics

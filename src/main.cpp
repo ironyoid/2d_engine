@@ -66,6 +66,7 @@ class Draw
     static bool is_right_button_pressed;
     static bool is_ctrl_pressed;
     constexpr static float LINE_THICKNESS = 4.0;
+    static const int32_t physics_tick = 5;
 
     static void Init (uint32_t width,
                       uint32_t height,
@@ -78,7 +79,7 @@ class Draw
         scale = 1.0;
         parser = new Parser(path);
         wheel = new Wheel(200, 1, 1, 100);
-        robot = new Robot(Point2D{ 250, 250 }, 20, 0.1, 2, 100, 0);
+        robot = new Robot(Point2D{ 250, 250 }, 50, 0.1, 2, 100, 0);
         auto [ret_lines, ret_point] = parser->ReadLines(window_width, window_height);
         lines = ret_lines;
         grid = new Grid(step, width, height, _window_width, _window_height);
@@ -107,15 +108,35 @@ class Draw
     }
 
     static void DrawLines (vector<Line2D> lines, Point2D _position) {
-        auto body = robot->GetBody();
+        static bool left_buf = false;
+        static bool right_buf = false;
         for(auto n : lines) {
-            auto [ret, ret_point] = Physics::LineCircleCollision(n, *body);
-            body->center.x += ret_point.x;
-            body->center.y += ret_point.y;
+            auto [ret, ret_point] = Physics::LineCircleCollision(n, *robot->GetBody());
+            robot->ChangePosition(ret_point);
+            auto [left_ray, right_ray] = robot->GetRays();
+            auto [ret_ll, ret_point_ll] = Physics::LineLineCollision(*left_ray, n);
+            auto [ret_lr, ret_point_lr] = Physics::LineLineCollision(*right_ray, n);
+            left_buf = left_buf | ret_ll;
+            right_buf = right_buf | ret_lr;
+            // cout << "left: " << ret_point_ll.ToString() << " " << ret_point_lr.ToString() << endl;
 
+            // if(true == ret_ll) {
+            //     p8g::stroke(0, 0, 255, 255);
+            //     p8g::strokeWeight(20);x
+            //     p8g::point(ret_point_ll.x, ret_point_ll.y);
+            // }
+            // if(true == ret_lr) {
+            //     p8g::stroke(0, 0, 255, 255);
+            //     p8g::strokeWeight(20);
+            //     p8g::point(ret_point_lr.x, ret_point_lr.y);
+            // }
+            p8g::stroke(0, 0, 0, 255);
             p8g::strokeWeight(LINE_THICKNESS);
             p8g::line(n.a.x - _position.x, n.a.y - _position.y, n.b.x - _position.x, n.b.y - _position.y);
         }
+        robot->SensorFeedback(left_buf, right_buf);
+        right_buf = false;
+        left_buf = false;
     }
 
     static void DrawQuad (Quad2D quad) {
@@ -143,12 +164,14 @@ class Draw
         p8g::applyMatrix(1.0, 0, 0, 1, -position.x, -position.y);
         p8g::scale(scale, scale);
 
-        if(last_millis + 5 <= p8g::millis()) {
+        if(last_millis + physics_tick <= p8g::millis()) {
             last_millis = p8g::millis();
-            robot->ProcessLeft(0.005);
-            robot->ProcessRight(0.005);
+            robot->ProcessLeft(physics_tick / 1000.0);
+            robot->ProcessRight(physics_tick / 1000.0);
+            robot->ProcessSensors(physics_tick / 1000.0);
         }
         robot->Draw();
+        DrawLines(lines, position);
 
         p8g::stroke(0, 0, 0, 120);
         grid->DrawGrid(position);
