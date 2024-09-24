@@ -7,6 +7,7 @@ class Robot
 {
    private:
     typedef enum {
+        eRobotState_Stop,
         eRobotState_Idle,
         eRobotState_Drive,
         eRobotState_Left,
@@ -42,4 +43,5 @@ class Robot
     Circle2D *GetBody (void);
     std::pair<const Line2D *, const Line2D *> GetRays (void);
     void SensorFeedback (bool left_ray, bool right_ray);
+    void Run (void);
 };

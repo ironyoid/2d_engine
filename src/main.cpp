@@ -48,6 +48,7 @@ typedef enum {
     eS_key = 83,
     eE_key = 69,
     eD_key = 68,
+    eR_key = 82,
 } eKeyboardKeys_t;
 
 class Draw
@@ -65,8 +66,9 @@ class Draw
     static float scale;
     static bool is_right_button_pressed;
     static bool is_ctrl_pressed;
+    static bool is_running;
     constexpr static float LINE_THICKNESS = 4.0;
-    static const int32_t physics_tick = 5;
+    static const int32_t physics_tick = 10;
 
     static void Init (uint32_t width,
                       uint32_t height,
@@ -78,12 +80,12 @@ class Draw
         window_height = _window_height;
         scale = 1.0;
         parser = new Parser(path);
-        wheel = new Wheel(200, 1, 1, 100);
-        robot = new Robot(Point2D{ 250, 250 }, 50, 0.1, 2, 100, 0);
+        robot = new Robot(Point2D{ 250, 250 }, 50, 0.3, 5, 100, 0);
         auto [ret_lines, ret_point] = parser->ReadLines(window_width, window_height);
         lines = ret_lines;
         grid = new Grid(step, width, height, _window_width, _window_height);
         grid->GenerateGrid();
+        is_running = false;
     }
 
     static void UpdateScale (float new_scale) {
@@ -170,6 +172,7 @@ class Draw
             robot->ProcessRight(physics_tick / 1000.0);
             robot->ProcessSensors(physics_tick / 1000.0);
         }
+
         robot->Draw();
         DrawLines(lines, position);
 
@@ -196,6 +199,9 @@ class Draw
         }
         if(eD_key == keyCode) {
             right_torque -= 10;
+        }
+        if(eR_key == keyCode) {
+            robot->Run();
         }
         robot->SetTorque(left_torque, right_torque);
     };
@@ -257,6 +263,7 @@ uint32_t Draw::window_width;
 uint32_t Draw::window_height;
 Wheel *Draw::wheel;
 Robot *Draw::robot;
+bool Draw::is_running;
 
 int main (int argc, char *argv[]) {
     if(2 == argc) {

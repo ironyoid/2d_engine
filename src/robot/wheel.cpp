@@ -37,10 +37,10 @@ float Wheel::GetCoef(void) {
             }
             break;
         case eWheelState_Motion:
-            ret = 100 * rolling_resistance_st * current_speed;
+            ret = 50 * rolling_resistance_st * current_speed;
             break;
         case eWheelState_Stop:
-            ret = 100 * rolling_resistance_st * current_speed;
+            ret = 50 * rolling_resistance_st * current_speed;
             break;
     }
     return ret;
@@ -80,7 +80,7 @@ float Wheel::Process(float time_delta) {
     position_delta = Run(torque, time_delta);
 
     if(count == 10) {
-        cout << "torque = " << torque << endl;
+        /*         cout << "torque = " << torque << endl;
         cout << "time delta = " << time_delta << endl;
         cout << "position = " << position << endl;
         cout << "angle_position = " << angle_position << endl;
@@ -88,7 +88,7 @@ float Wheel::Process(float time_delta) {
         cout << "current_angle_speed = " << current_angle_speed << endl;
         cout << "state = " << state << endl;
         cout << "encoder = " << encoder << endl;
-        cout << endl;
+        cout << endl; */
         count = 0;
     }
 
